@@ -1,0 +1,62 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #e3e4fa;
+}
+
+.navbar {
+    background-color: #00bfff;
+    color: white !important;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.profile-link {
+    margin-left: auto;
+}
+
+.container {
+    background-color: white;
+    margin: 20px auto;
+    padding: 20px;
+    width: 60%;
+}
+
+.cards {
+    display: flex;
+    justify-content: space-around;
+}
+
+.card {
+    border: 1px solid #b0e0e6;
+    padding: 10px;
+    width: 30%;
+    text-align: center;
+}
+
+.card-deck .card {
+    margin: 10px;
+}

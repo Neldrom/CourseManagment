@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CourseManagment.Migrations
 {
-    [DbContext(typeof(AppDbContext))]
-    [Migration("20240523172307_init")]
+    [DbContext(typeof(ApplicationDbContext))]
+    [Migration("20240526165716_init")]
     partial class init
     {
         /// <inheritdoc />

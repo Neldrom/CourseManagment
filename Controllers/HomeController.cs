@@ -3,9 +3,9 @@ using CourseManagment.Data;
 
 public class HomeController : Controller
 {
-    private readonly AppDbContext _context;
+    private readonly ApplicationDbContext _context;
 
-    public HomeController(AppDbContext context)
+    public HomeController(ApplicationDbContext context)
     {
         _context = context;
     }

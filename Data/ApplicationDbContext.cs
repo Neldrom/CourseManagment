@@ -5,40 +5,26 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CourseManagment.Data
 {
-    public class AppDbContext : IdentityDbContext<User, Role, int, IdentityUserClaim<int>, UserRole, IdentityUserLogin<int>, IdentityRoleClaim<int>, IdentityUserToken<int>>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options)
-            : base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
 
-        public DbSet<Course> Courses { get; set; }
-        public DbSet<Enrollment> Enrollments { get; set; }
-        public DbSet<Grade> Grades { get; set; }
+        public DbSet<Course> Courses { get; set; }  // Ensure this line is present
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
             // Конфигурация на релациите между потребители и роли
-            builder.Entity<UserRole>(userRole =>
-            {
-                userRole.HasKey(ur => new { ur.UserId, ur.RoleId });
-
-                userRole.HasOne(ur => ur.Role)
-                    .WithMany(r => r.UserRoles)
-                    .HasForeignKey(ur => ur.RoleId)
-                    .IsRequired();
-
-                userRole.HasOne(ur => ur.User)
-                    .WithMany(u => u.UserRoles)
-                    .HasForeignKey(ur => ur.UserId)
-                    .IsRequired();
-            });
+            
+           
 
             // Конфигурация на релациите за Enrollment
             builder.Entity<Enrollment>()
-                .HasOne(e => e.User)
+                .HasOne(e => e.ApplicationUser)
                 .WithMany(u => u.Enrollments)
                 .HasForeignKey(e => e.UserId)
                 .OnDelete(DeleteBehavior.Restrict); // Премахване на каскадното изтриване

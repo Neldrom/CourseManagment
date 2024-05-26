@@ -10,7 +10,7 @@ namespace CourseManagment.Models
         public DateTime EnrollmentDate { get; set; }
 
         // Навигационни свойства
-        public User User { get; set; }
+        public ApplicationUser ApplicationUser { get; set; }
         public Course Course { get; set; }
         public ICollection<Grade> Grades { get; set; }
     }

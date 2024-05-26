@@ -10,6 +10,6 @@
 
         // Навигационни свойства
         public Enrollment Enrollment { get; set; }
-        public User Teacher { get; set; }
+        public ApplicationUser Teacher { get; set; }
     }
 }

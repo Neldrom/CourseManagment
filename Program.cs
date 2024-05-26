@@ -1,55 +1,28 @@
-using CourseManagment.Data;
-using CourseManagment.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using System.Threading.Tasks;
 
-var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-builder.Services.AddControllersWithViews();
-
-// Add DbContext
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-// Add Identity
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-    .AddEntityFrameworkStores<AppDbContext>()
-    .AddDefaultTokenProviders();
-
-var app = builder.Build();
-
-// Create roles
-using (var scope = app.Services.CreateScope())
+public class Program
 {
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
-    string[] roleNames = { "Admin", "Teacher", "Student" };
-    foreach (var roleName in roleNames)
+    public static void Main(string[] args)
     {
-        if (!await roleManager.RoleExistsAsync(roleName))
+        var host = CreateHostBuilder(args).Build();
+
+        using (var scope = host.Services.CreateScope())
         {
-            await roleManager.CreateAsync(new Role { Name = roleName });
+            var services = scope.ServiceProvider;
+            RoleSeeder.SeedRoles(services).Wait(); // Ensure this is run in a safe context
         }
+
+        host.Run();
     }
+
+    public static IHostBuilder CreateHostBuilder(string[] args) =>
+        Host.CreateDefaultBuilder(args)
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.UseStartup<Startup>();
+            });
 }
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
-}
-
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-
-app.UseRouting();
-
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-
-app.Run();

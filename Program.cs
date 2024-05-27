@@ -1,8 +1,3 @@
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using System.Threading.Tasks;
-
 public class Program
 {
     public static void Main(string[] args)
@@ -12,7 +7,7 @@ public class Program
         using (var scope = host.Services.CreateScope())
         {
             var services = scope.ServiceProvider;
-            RoleSeeder.SeedRoles(services).Wait(); // Ensure this is run in a safe context
+            RoleSeeder.SeedRoles(services).Wait();
         }
 
         host.Run();
@@ -25,4 +20,3 @@ public class Program
                 webBuilder.UseStartup<Startup>();
             });
 }
-

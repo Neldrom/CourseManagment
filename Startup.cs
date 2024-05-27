@@ -21,18 +21,14 @@ public class Startup
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-        services.AddIdentity<ApplicationUser, ApplicationRole>(options => {
-            options.Password.RequireDigit = false;
-            options.Password.RequiredLength = 6;
-            options.Password.RequireNonAlphanumeric = false;
-            options.Password.RequireUppercase = false;
-            options.Password.RequireLowercase = false;
-        })
-        .AddEntityFrameworkStores<ApplicationDbContext>()
-        .AddDefaultTokenProviders();
+        services.AddIdentity<ApplicationUser, ApplicationRole>()
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddSignInManager()
+            .AddDefaultTokenProviders();
 
         services.AddControllersWithViews();
     }
+
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
@@ -43,6 +39,7 @@ public class Startup
         else
         {
             app.UseExceptionHandler("/Home/Error");
+            app.UseHsts();
         }
 
         app.UseHttpsRedirection();
@@ -60,4 +57,5 @@ public class Startup
                 pattern: "{controller=Home}/{action=Index}/{id?}");
         });
     }
+
 }

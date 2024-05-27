@@ -2,8 +2,9 @@
 
 namespace CourseManagment.Models
 {
-    public class ApplicationRole : IdentityRole
+    public class ApplicationRole : IdentityRole<int>
     {
+        // Additional properties or constructors
     }
 
 }

@@ -1,10 +1,17 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.Collections.Generic;
 
-namespace CourseManagment.Models
+public class ApplicationUser : IdentityUser<int>
 {
-    public class ApplicationUser : IdentityUser
+    // Additional properties related to ApplicationUser
+    public ICollection<Enrollment> Enrollments { get; set; }
+
+    // Assuming the user can give grades, add this property
+    public ICollection<Grade> GradesGiven { get; set; }
+
+    public ApplicationUser()
     {
-        public ICollection<Enrollment> Enrollments { get; set; }
-        public ICollection<Grade> GradesGiven { get; set; }  // Оценките, дадени от учителя
+        Enrollments = new HashSet<Enrollment>();
+        GradesGiven = new HashSet<Grade>();
     }
 }

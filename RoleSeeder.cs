@@ -10,15 +10,14 @@ public static class RoleSeeder
     {
         var roleManager = serviceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
 
-        string[] roleNames = { "Admin", "User" };  // Example role names
+        string[] roleNames = { "Admin", "User" };
         foreach (var roleName in roleNames)
         {
             if (!await roleManager.RoleExistsAsync(roleName))
             {
-                var role = new ApplicationRole { Name = roleName };  // Correctly instantiate and set the Name property
-                var roleResult = await roleManager.CreateAsync(role);
+                var role = new ApplicationRole { Name = roleName };
+                await roleManager.CreateAsync(role);
             }
         }
     }
-
 }

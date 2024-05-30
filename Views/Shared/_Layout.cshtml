@@ -1,43 +1,42 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Your App Name</title>
-    <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <title>@ViewData["Title"] - CourseManagment</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-md navbar-light bg-light">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="@Url.Action("Index", "Home")">Your App Name</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <nav class="navbar navbar-expand-sm navbar-light bg-light">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">CourseManagment</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ml-auto">
-                        @if (User.Identity.IsAuthenticated)
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        @if (User.IsInRole("Teacher"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link" href="@Url.Action("Profile", "Account")">Profile</a>
-                            </li>
-                            <li class="nav-item">
-                                <form method="post" asp-action="Logout" asp-controller="Account" id="logoutForm">
-                                    <button type="submit" class="btn btn-link nav-link" id="logoutButton">Logout</button>
-                                </form>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Teacher" asp-action="Home">My Courses</a>
                             </li>
                         }
-                        else
+                        @if (User.IsInRole("Student"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link" href="@Url.Action("Login", "Account")">Login</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Student" asp-action="Home">My Courses</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="@Url.Action("Register", "Account")">Register</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Student" asp-action="Courses">Available Courses</a>
                             </li>
                         }
                     </ul>
+                    <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>
@@ -50,13 +49,13 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2023 - Your App Name - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2024 - CourseManagment - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

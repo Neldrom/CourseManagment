@@ -1,10 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CourseManagment.Models
 {
     public class RegisterViewModel
     {
+        [Required]
+        [Display(Name = "User Name")]
+        public string UserName { get; set; }
 
         [Required]
         [EmailAddress]
@@ -25,7 +30,8 @@ namespace CourseManagment.Models
         [Display(Name = "Role")]
         public string Role { get; set; }
 
-        public IEnumerable<SelectListItem> Roles { get; set; }
+        [Display(Name = "Roles")]
+        [ValidateNever]
+        public List<SelectListItem> Roles { get; set; }
     }
-
 }

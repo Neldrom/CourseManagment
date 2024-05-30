@@ -1,0 +1,52 @@
+﻿@model IEnumerable<CourseManagment.Models.Course>
+
+@{
+    ViewData["Title"] = "My Courses";
+}
+
+<h2>My Courses</h2>
+
+<p>
+    <a asp-action="CreateCourse" class="btn btn-primary">Create New Course</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.First().Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().Category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().Level)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Level)
+                </td>
+                <td>
+                    <a asp-action="CourseDetails" asp-route-id="@item.CourseId" class="btn btn-info">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

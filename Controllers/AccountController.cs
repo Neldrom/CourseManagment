@@ -4,6 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using CourseManagment.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 
 namespace CourseManagment.Controllers
 {
@@ -12,59 +15,86 @@ namespace CourseManagment.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
+        private readonly ILogger<AccountController> _logger;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<ApplicationRole> roleManager)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<ApplicationRole> roleManager, ILogger<AccountController> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
+            _logger = logger;
         }
 
         [HttpGet]
-        public IActionResult Register()
+        public async Task<IActionResult> Register()
         {
-            var model = new RegisterViewModel
-            {
-                Roles = _roleManager.Roles.Select(r => new SelectListItem
+            var roles = await _roleManager.Roles
+                .Where(r => r.Name != "Admin")
+                .Select(r => new SelectListItem
                 {
                     Value = r.Name,
                     Text = r.Name
-                }).ToList()
+                }).ToListAsync();
+
+            _logger.LogInformation($"Roles found: {roles.Count}");
+            foreach (var role in roles)
+            {
+                _logger.LogInformation($"Role: {role.Text}");
+            }
+
+            var model = new RegisterViewModel
+            {
+                Roles = roles
             };
+
             return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(RegisterViewModel model)
+        [AllowAnonymous]
+        public async Task<IActionResult> Register([Bind("UserName,Email,Password,ConfirmPassword,Role")] RegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                _logger.LogInformation("Model state is valid. Creating user.");
+                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email };
+
                 var result = await _userManager.CreateAsync(user, model.Password);
 
                 if (result.Succeeded)
                 {
-                    if (!await _roleManager.RoleExistsAsync(model.Role))
+                    _logger.LogInformation("User created successfully. Adding to role.");
+                    if (!string.IsNullOrEmpty(model.Role))
                     {
-                        await _roleManager.CreateAsync(new ApplicationRole());
+                        await _userManager.AddToRoleAsync(user, model.Role);
                     }
 
-                    await _userManager.AddToRoleAsync(user, model.Role);
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return RedirectToAction("Index", "Home");
                 }
-
                 foreach (var error in result.Errors)
                 {
+                    _logger.LogError($"Error creating user: {error.Description}");
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
-
-            model.Roles = _roleManager.Roles.Select(r => new SelectListItem
+            else
             {
-                Value = r.Name,
-                Text = r.Name
-            }).ToList();
+                _logger.LogWarning("Model state is invalid.");
+                foreach (var modelError in ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    _logger.LogWarning($"Model error: {modelError.ErrorMessage}");
+                }
+            }
+
+            // Repopulate the roles if there's a return to the form, excluding Admin role
+            model.Roles = await _roleManager.Roles
+                .Where(r => r.Name != "Admin")
+                .Select(r => new SelectListItem
+                {
+                    Value = r.Name,
+                    Text = r.Name
+                }).ToListAsync();
 
             return View(model);
         }
@@ -76,18 +106,34 @@ namespace CourseManagment.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+                var user = await _userManager.FindByEmailAsync(model.Email);
+
+                if (user == null)
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    return View(model);
+                }
+
+                var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, lockoutOnFailure: false);
+
                 if (result.Succeeded)
                 {
+                    var roles = await _userManager.GetRolesAsync(user);
+
                     return RedirectToAction("Index", "Home");
+                    
                 }
+
                 ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                return View(model);
             }
 
+            // If we got this far, something failed, redisplay form
             return View(model);
         }
 
@@ -96,23 +142,6 @@ namespace CourseManagment.Controllers
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Profile()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return RedirectToAction("Login");
-            }
-
-            var model = new ProfileViewModel
-            {
-                Email = user.Email,
-            };
-
-            return View(model);
         }
     }
 }

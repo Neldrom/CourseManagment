@@ -1,0 +1,52 @@
+﻿@model IEnumerable<CourseManagment.Models.Course>
+
+@{
+    ViewData["Title"] = "Available Courses";
+}
+
+<h2>Available Courses</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Level)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Category)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Level)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category)
+                </td>
+                <td>
+                    <form asp-action="Enroll" method="post">
+                        <input type="hidden" name="courseId" value="@item.CourseId" />
+                        <button type="submit" class="btn btn-primary">Enroll</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

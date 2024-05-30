@@ -1,0 +1,45 @@
+﻿@model CourseManagment.Models.CreateCourseViewModel
+
+@{
+    ViewData["Title"] = "Create Course";
+}
+
+<h2>Create Course</h2>
+
+<h4>Course</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateCourse">
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SelectedLevel" class="control-label">Course Level</label>
+                <select asp-for="SelectedLevel" class="form-control" asp-items="Model.Levels"></select>
+                <span asp-validation-for="SelectedLevel" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SelectedCategory" class="control-label">Category</label>
+                <select asp-for="SelectedCategory" class="form-control" asp-items="Model.Categories"></select>
+                <span asp-validation-for="SelectedCategory" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

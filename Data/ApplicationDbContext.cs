@@ -1,11 +1,10 @@
 ﻿using CourseManagment.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace CourseManagment.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, int>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -20,39 +19,38 @@ namespace CourseManagment.Data
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<ApplicationUser>()
-                .HasMany(u => u.GradesGiven)
-                .WithOne(g => g.Teacher)  // Ensure Grade has a navigation property 'Teacher' of type ApplicationUser
-                .HasForeignKey(g => g.TeacherId)
-                .OnDelete(DeleteBehavior.Restrict);
+            // Configure User-Course relationship
+            builder.Entity<Course>()
+                .HasOne(c => c.Teacher)
+                .WithMany()
+                .HasForeignKey(c => c.TeacherId)
+                .OnDelete(DeleteBehavior.Restrict); // No cascade delete
 
-            // Configure User-Enrollment relationship
+            // Configure Enrollment relationships
             builder.Entity<Enrollment>()
                 .HasOne(e => e.User)
                 .WithMany(u => u.Enrollments)
                 .HasForeignKey(e => e.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict); // No cascade delete
 
-            // Configure Course-Enrollment relationship
             builder.Entity<Enrollment>()
                 .HasOne(e => e.Course)
                 .WithMany(c => c.Enrollments)
                 .HasForeignKey(e => e.CourseId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict); // No cascade delete
 
-            // Configure Grade-Enrollment relationship
+            // Configure Grade relationships
             builder.Entity<Grade>()
                 .HasOne(g => g.Enrollment)
                 .WithMany(e => e.Grades)
                 .HasForeignKey(g => g.EnrollmentId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict); // No cascade delete
 
-            // Configure Grade-User relationship if it exists (for example, if a Grade is given by a Teacher)
             builder.Entity<Grade>()
                 .HasOne(g => g.Teacher)
-                .WithMany(t => t.GradesGiven)
+                .WithMany()
                 .HasForeignKey(g => g.TeacherId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction); // No cascade delete
         }
     }
 }

@@ -1,17 +1,30 @@
-﻿namespace CourseManagment.Models
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace CourseManagment.Models
 {
     public class Course
     {
+        [Key]
         public int CourseId { get; set; }
-        public string CourseName { get; set; }
-        public string Description { get; set; }
-        public string Category { get; set; }
-        public string Level { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public string Instructor { get; set; }
 
-        // Навигационно свойство за записванията
+        [Required]
+        public string Title { get; set; }
+
+        [Required]
+        public string Description { get; set; }
+
+        [Required]
+        public string Level { get; set; }
+
+        [Required]
+        public string Category { get; set; }
+
+        [Required]
+        public string TeacherId { get; set; }
+        public ApplicationUser Teacher { get; set; }
+
         public ICollection<Enrollment> Enrollments { get; set; }
     }
 }

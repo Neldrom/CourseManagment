@@ -1,0 +1,33 @@
+﻿@model CourseManagment.Models.Course
+
+@{
+    ViewData["Title"] = "Course Details";
+}
+
+<h1>@Model.Title</h1>
+
+@if (Model.Enrollments == null || !Model.Enrollments.Any())
+{
+    <p>No enrollments found for this course.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Grade Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var enrollment in Model.Enrollments.Where(e => e.User.UserName == User.Identity.Name))
+            {
+                @foreach (var grade in enrollment.Grades)
+                {
+                    <tr>
+                        <td>@grade.GradeValue</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+}

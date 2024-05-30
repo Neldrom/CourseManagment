@@ -1,0 +1,103 @@
+﻿@model CourseManagment.Models.Course
+
+@{
+    ViewData["Title"] = "Course Details";
+}
+
+<h1>@Model.Title</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>UserName</th>
+            <th>Grades</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var enrollment in Model.Enrollments)
+        {
+            <tr>
+                <td>@enrollment.User.UserName</td>
+                <td>
+                    <div class="grades-container">
+                        @foreach (var grade in enrollment.Grades)
+                        {
+                            <div class="grade-item" id="grade-item-@grade.GradeId">
+                                <span class="grade-value" id="grade-value-@grade.GradeId">@grade.GradeValue</span>
+                                <button type="button" class="btn btn-sm btn-primary" onclick="toggleEdit(@grade.GradeId)">Edit</button>
+                                <form asp-action="EditGrade" method="post" class="form-inline edit-form d-none" id="edit-form-@grade.GradeId">
+                                    <input type="hidden" name="gradeId" value="@grade.GradeId" />
+                                    <input type="text" name="newGradeValue" value="@grade.GradeValue" class="form-control" />
+                                    <button type="submit" class="btn btn-sm btn-success">Save</button>
+                                    <button type="button" class="btn btn-sm btn-secondary" onclick="toggleEdit(@grade.GradeId)">Cancel</button>
+                                </form>
+                                <form asp-action="DeleteGrade" method="post" class="form-inline">
+                                    <input type="hidden" name="gradeId" value="@grade.GradeId" />
+                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                </form>
+                            </div>
+                        }
+                        <form asp-action="AddGrade" method="post" class="add-grade-form">
+                            <input type="hidden" name="enrollmentId" value="@enrollment.EnrollmentId" />
+                            <input type="text" name="grade" placeholder="Add new grade" class="form-control" />
+                            <button type="submit" class="btn btn-sm btn-success">Add</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        function toggleEdit(gradeId) {
+            var gradeValue = document.getElementById('grade-value-' + gradeId);
+            var editForm = document.getElementById('edit-form-' + gradeId);
+
+            if (editForm.classList.contains('d-none')) {
+                editForm.classList.remove('d-none');
+                gradeValue.style.display = 'none';
+            } else {
+                editForm.classList.add('d-none');
+                gradeValue.style.display = 'inline';
+            }
+        }
+    </script>
+}
+
+<style>
+    .grades-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .grade-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .form-inline {
+        display: inline-flex;
+    }
+
+    .edit-form {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .add-grade-form {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-top: 10px;
+    }
+
+    .btn-sm {
+        font-size: 0.875rem;
+        padding: 0.25rem 0.5rem;
+    }
+</style>

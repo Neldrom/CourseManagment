@@ -1,0 +1,15 @@
+﻿@model CourseManagment.Models.ChangeUsernameViewModel
+@{
+    ViewData["Title"] = "Change Username";
+}
+
+<h2>Change Username</h2>
+
+<form asp-action="ChangeUsername">
+    <div class="form-group">
+        <label asp-for="NewUsername"></label>
+        <input asp-for="NewUsername" class="form-control" />
+        <span asp-validation-for="NewUsername" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Change Username</button>
+</form>

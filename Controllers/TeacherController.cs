@@ -130,7 +130,7 @@ namespace CourseManagment.Controllers
         // POST: Teacher/AddGrade
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddGrade(int enrollmentId, string grade)
+        public async Task<IActionResult> AddGrade(int enrollmentId, double grade)
         {
             var enrollment = await _context.Enrollments
                 .Include(e => e.Grades)
@@ -157,7 +157,7 @@ namespace CourseManagment.Controllers
 
         // POST: Teacher/EditGrade
         [HttpPost]
-        public async Task<IActionResult> EditGrade(int gradeId, string newGradeValue)
+        public async Task<IActionResult> EditGrade(int gradeId, double newGradeValue)
         {
             var grade = await _context.Grades
                                       .Include(g => g.Enrollment)

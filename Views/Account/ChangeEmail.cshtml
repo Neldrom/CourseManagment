@@ -1,0 +1,15 @@
+﻿@model CourseManagment.Models.ChangeEmailViewModel
+@{
+    ViewData["Title"] = "Change Email";
+}
+
+<h2>Change Email</h2>
+
+<form asp-action="ChangeEmail">
+    <div class="form-group">
+        <label asp-for="NewEmail"></label>
+        <input asp-for="NewEmail" class="form-control" />
+        <span asp-validation-for="NewEmail" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Change Email</button>
+</form>

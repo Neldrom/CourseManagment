@@ -9,7 +9,7 @@ namespace CourseManagment.Models
         public int GradeId { get; set; }
 
         [Required]
-        public string GradeValue { get; set; }
+        public double GradeValue { get; set; }
 
         [Required]
         public int EnrollmentId { get; set; }

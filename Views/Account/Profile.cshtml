@@ -1,14 +1,28 @@
-﻿@model CourseManagment.Models.ProfileViewModel
+﻿@model CourseManagment.Models.ApplicationUser
+@inject Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> UserManager
 
 @{
     ViewData["Title"] = "Profile";
 }
 
-<h2>Profile</h2>
+<h2>@Model.UserName's Profile</h2>
 
-<div>
-    <div class="form-group">
-        <label asp-for="Email" class="control-label"></label>
-        <input asp-for="Email" class="form-control" disabled />
-    </div>
-</div>
+@if (await UserManager.IsInRoleAsync(Model, "Student"))
+{
+    <p>Average Grade: @ViewBag.AverageGrade</p>
+}
+else if (await UserManager.IsInRoleAsync(Model, "Teacher"))
+{
+    <p>Overall Average Grade: @ViewBag.OverallAverage</p>
+    <h3>Courses</h3>
+    <ul>
+        @foreach (var course in ViewBag.CourseAverages)
+        {
+            <li>@course.Course.Title: @course.Average</li>
+        }
+    </ul>
+}
+
+<a href="@Url.Action("ChangePassword", "Account")">Change Password</a>
+<a href="@Url.Action("ChangeUsername", "Account")">Change Username</a>
+<a href="@Url.Action("ChangeEmail", "Account")">Change Email</a>

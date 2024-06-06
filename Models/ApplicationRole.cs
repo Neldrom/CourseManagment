@@ -8,6 +8,5 @@ namespace CourseManagment.Models
 
         public ApplicationRole(string roleName) : base(roleName) { }
 
-        // Additional properties or constructors if needed
     }
 }

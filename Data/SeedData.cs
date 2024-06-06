@@ -22,7 +22,6 @@ namespace CourseManagment.Data
                 }
             }
 
-            // Create an admin user
             var adminUser = new ApplicationUser
             {
                 UserName = "admin@admin.com",

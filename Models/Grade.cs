@@ -8,14 +8,11 @@ namespace CourseManagment.Models
         [Key]
         public int GradeId { get; set; }
 
-        [Required]
         public double GradeValue { get; set; }
 
-        [Required]
         public int EnrollmentId { get; set; }
         public Enrollment Enrollment { get; set; }
 
-        [Required]
         public string TeacherId { get; set; }
         public ApplicationUser Teacher { get; set; }
     }

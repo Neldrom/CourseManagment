@@ -21,7 +21,6 @@ namespace CourseManagment.Controllers
             _userManager = userManager;
         }
 
-        // GET: Student/Home
         public async Task<IActionResult> Home()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -36,7 +35,6 @@ namespace CourseManagment.Controllers
             return View(courses);
         }
 
-        // GET: Student/Courses
         public async Task<IActionResult> Courses()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -52,7 +50,6 @@ namespace CourseManagment.Controllers
             return View(courses);
         }
 
-        // POST: Student/Enroll
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Enroll(int courseId)
@@ -69,7 +66,6 @@ namespace CourseManagment.Controllers
 
             if (existingEnrollment)
             {
-                // Optionally, you can return a view with an error message
                 ModelState.AddModelError(string.Empty, "You are already enrolled in this course.");
                 return RedirectToAction(nameof(Courses));
             }
@@ -85,7 +81,6 @@ namespace CourseManagment.Controllers
             return RedirectToAction(nameof(Home));
         }
 
-        // GET: Student/CourseDetails/5
         public async Task<IActionResult> CourseDetails(int courseId)
         {
             var course = await _context.Courses

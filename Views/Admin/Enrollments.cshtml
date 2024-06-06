@@ -1,0 +1,36 @@
+﻿@model IEnumerable<IGrouping<CourseManagment.Models.Course, CourseManagment.Models.Enrollment>>
+
+@{
+    ViewData["Title"] = "Enrollments";
+}
+
+<h1>Enrollments</h1>
+
+<p>
+    <a asp-action="CreateEnrollment">Create New Enrollment</a>
+</p>
+
+@foreach (var courseGroup in Model)
+{
+    <h2>@courseGroup.Key.Title</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Student</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var enrollment in courseGroup)
+            {
+                <tr>
+                    <td>@enrollment.User.UserName</td>
+                    <td>
+                        <a asp-action="EditGrades" asp-route-id="@enrollment.EnrollmentId">Edit</a> |
+                        <a asp-action="DeleteEnrollment" asp-route-id="@enrollment.EnrollmentId">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

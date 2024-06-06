@@ -1,0 +1,53 @@
+﻿@model CourseManagment.Models.Enrollment
+
+@{
+    ViewData["Title"] = "Edit Grades";
+}
+
+<h1>Edit Grades for @Model.User.UserName in @Model.Course.Title</h1>
+
+<form asp-action="EditGrades" method="post">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Assignment</th>
+                <th>Grade</th>
+                <th></th> <!-- For the delete button -->
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                var gradesList = Model.Grades.ToList();
+            }
+            @for (int i = 0; i < gradesList.Count; i++)
+            {
+                <tr>
+                    <td>@gradesList[i].Enrollment.Course.Title</td>
+                    <td>
+                        <input type="hidden" asp-for="@gradesList[i].GradeId" name="grades[@i].GradeId" value="@gradesList[i].GradeId" />
+                        <input asp-for="@gradesList[i].GradeValue" class="form-control" name="grades[@i].GradeValue" value="@gradesList[i].GradeValue" />
+                    </td>
+                    <td>
+                        <form asp-action="DeleteGrade" method="post" style="display:inline;">
+                            <input type="hidden" name="id" value="@gradesList[i].GradeId" />
+                            <input type="submit" value="Delete" class="btn btn-danger" />
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <input type="submit" value="Save" class="btn btn-primary" />
+</form>
+
+<h2>Create New Grade</h2>
+
+<form asp-action="CreateGrade" method="post">
+    <div class="form-group">
+        <label for="GradeValue" class="control-label">Grade Value</label>
+        <input type="number" class="form-control" id="GradeValue" name="GradeValue" />
+    </div>
+    <input type="hidden" name="EnrollmentId" value="@Model.EnrollmentId" />
+    <input type="hidden" name="TeacherId" value="@Model.Course.TeacherId" />
+    <input type="submit" value="Create" class="btn btn-primary" />
+</form>

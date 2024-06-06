@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CourseManagment.Controllers
 {
@@ -22,7 +20,6 @@ namespace CourseManagment.Controllers
             _userManager = userManager;
         }
 
-        // GET: Teacher/Home
         public async Task<IActionResult> Home()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -32,38 +29,15 @@ namespace CourseManagment.Controllers
             return View(courses);
         }
 
-        // GET: Teacher/CreateCourse
         [HttpGet]
         public IActionResult CreateCourse()
         {
-            var model = new CreateCourseViewModel
-            {
-                Levels = new List<SelectListItem>
-                {
-                    new SelectListItem { Value = "Beginner", Text = "Beginner" },
-                    new SelectListItem { Value = "Intermediate", Text = "Intermediate" },
-                    new SelectListItem { Value = "Advanced", Text = "Advanced" },
-                    new SelectListItem { Value = "Expert", Text = "Expert" }
-                },
-                Categories = new List<SelectListItem>
-                {
-                    new SelectListItem { Value = "Maths", Text = "Maths" },
-                    new SelectListItem { Value = "Physics", Text = "Physics" },
-                    new SelectListItem { Value = "Chemistry", Text = "Chemistry" },
-                    new SelectListItem { Value = "Biology", Text = "Biology" },
-                    new SelectListItem { Value = "Computer Science", Text = "Computer Science" },
-                    new SelectListItem { Value = "Literature", Text = "Literature" },
-                    new SelectListItem { Value = "History", Text = "History" },
-                    new SelectListItem { Value = "Art", Text = "Art" },
-                    new SelectListItem { Value = "Music", Text = "Music" },
-                    new SelectListItem { Value = "Economics", Text = "Economics" }
-                }
-            };
+            var model = new CreateCourseViewModel();
+            DropdownHelper.PopulateDropdownLists(model);
 
             return View(model);
         }
 
-        // POST: Teacher/CreateCourse
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateCourse(CreateCourseViewModel model)
@@ -84,32 +58,11 @@ namespace CourseManagment.Controllers
                 return RedirectToAction(nameof(Home));
             }
 
-            // Repopulate dropdown lists if the model state is invalid
-            model.Levels = new List<SelectListItem>
-            {
-                new SelectListItem { Value = "Beginner", Text = "Beginner" },
-                new SelectListItem { Value = "Intermediate", Text = "Intermediate" },
-                new SelectListItem { Value = "Advanced", Text = "Advanced" },
-                new SelectListItem { Value = "Expert", Text = "Expert" }
-            };
-            model.Categories = new List<SelectListItem>
-            {
-                new SelectListItem { Value = "Maths", Text = "Maths" },
-                new SelectListItem { Value = "Physics", Text = "Physics" },
-                new SelectListItem { Value = "Chemistry", Text = "Chemistry" },
-                new SelectListItem { Value = "Biology", Text = "Biology" },
-                new SelectListItem { Value = "Computer Science", Text = "Computer Science" },
-                new SelectListItem { Value = "Literature", Text = "Literature" },
-                new SelectListItem { Value = "History", Text = "History" },
-                new SelectListItem { Value = "Art", Text = "Art" },
-                new SelectListItem { Value = "Music", Text = "Music" },
-                new SelectListItem { Value = "Economics", Text = "Economics" }
-            };
+            DropdownHelper.PopulateDropdownLists(model);
 
             return View(model);
         }
 
-        // GET: Teacher/CourseDetails/5
         public async Task<IActionResult> CourseDetails(int id)
         {
             var course = await _context.Courses
@@ -127,7 +80,6 @@ namespace CourseManagment.Controllers
             return View(course);
         }
 
-        // POST: Teacher/AddGrade
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddGrade(int enrollmentId, double grade)
@@ -155,7 +107,6 @@ namespace CourseManagment.Controllers
             return RedirectToAction(nameof(CourseDetails), new { id = enrollment.CourseId });
         }
 
-        // POST: Teacher/EditGrade
         [HttpPost]
         public async Task<IActionResult> EditGrade(int gradeId, double newGradeValue)
         {
@@ -177,7 +128,6 @@ namespace CourseManagment.Controllers
         }
 
 
-        // POST: Teacher/DeleteGrade
         [HttpPost]
         public async Task<IActionResult> DeleteGrade(int gradeId)
         {

@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
-using System.Threading.Tasks;
 using CourseManagment.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using CourseManagment.Data;
 
@@ -16,15 +13,13 @@ namespace CourseManagment.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
-        private readonly ILogger<AccountController> _logger;
         private readonly ApplicationDbContext _context;
 
-        public AccountController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<ApplicationRole> roleManager, ILogger<AccountController> logger)
+        public AccountController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<ApplicationRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
-            _logger = logger;
             _context = context;
         }
 
@@ -38,12 +33,6 @@ namespace CourseManagment.Controllers
                     Value = r.Name,
                     Text = r.Name
                 }).ToListAsync();
-
-            _logger.LogInformation($"Roles found: {roles.Count}");
-            foreach (var role in roles)
-            {
-                _logger.LogInformation($"Role: {role.Text}");
-            }
 
             var model = new RegisterViewModel
             {
@@ -59,14 +48,12 @@ namespace CourseManagment.Controllers
         {
             if (ModelState.IsValid)
             {
-                _logger.LogInformation("Model state is valid. Creating user.");
                 var user = new ApplicationUser { UserName = model.UserName, Email = model.Email };
 
                 var result = await _userManager.CreateAsync(user, model.Password);
 
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User created successfully. Adding to role.");
                     if (!string.IsNullOrEmpty(model.Role))
                     {
                         await _userManager.AddToRoleAsync(user, model.Role);
@@ -77,16 +64,7 @@ namespace CourseManagment.Controllers
                 }
                 foreach (var error in result.Errors)
                 {
-                    _logger.LogError($"Error creating user: {error.Description}");
                     ModelState.AddModelError(string.Empty, error.Description);
-                }
-            }
-            else
-            {
-                _logger.LogWarning("Model state is invalid.");
-                foreach (var modelError in ModelState.Values.SelectMany(v => v.Errors))
-                {
-                    _logger.LogWarning($"Model error: {modelError.ErrorMessage}");
                 }
             }
 
